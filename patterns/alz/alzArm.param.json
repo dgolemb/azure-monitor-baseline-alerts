@@ -2535,11 +2535,11 @@
         "CDNPPercentage5XXAlertState": {
           "value": "true"
         },
-        "CDNPPercentage5XXFailingPeriods": {
-          "value": "2"
+        "CDNPPercentage5XXThreshold": {
+          "value": "0"
         },
-        "CDNPPercentage5XXEvaluationPeriods": {
-          "value": "2"
+        "CDNPPercentage5XXOperator": {
+          "value": "GreaterThan"
         },
         "FDBackendHealthAlertSeverity": {
           "value": "2"
