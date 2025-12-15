@@ -202,7 +202,7 @@
               },
               {
                 "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.allOf[*].timeAggregation",
-                "equals": "Total"
+                "equals": "Count"
               },
               {
                 "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.allOf[*].StaticThresholdCriterion.operator",
@@ -284,7 +284,7 @@
                             "metricName": "Percentage5XX",
                             "operator": "[[parameters('operator')]",
                             "threshold": "[[parameters('threshold')]",
-                            "timeAggregation": "Total",
+                            "timeAggregation": "Count",
                             "criterionType": "StaticThresholdCriterion"
                           }
                         ],
