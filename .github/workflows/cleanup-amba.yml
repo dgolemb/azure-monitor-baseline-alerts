@@ -1,0 +1,80 @@
+name: Cleanup AMBA Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      cleanupType:
+        description: 'Type of cleanup to perform'
+        required: true
+        type: choice
+        options:
+          - 'All-Resources'
+          - 'PolicyAssignments'
+          - 'PolicyDefinitions'
+          - 'Alerts'
+          - 'NotificationAssets'
+          - 'OldNotificationAssets'
+          - 'LegacySH'
+          - 'OrphanedAlerts'
+          - 'RoleAssignments'
+          - 'Deployments'
+        default: 'All-Resources'
+      confirmDestruction:
+        description: 'I confirm deletion of policies and alert rules from the specified scope'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ManagementGroupPrefix: "ALZ"
+
+jobs:
+  cleanup_amba:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: Run AMBA Cleanup
+        shell: pwsh
+        run: |
+          $pseudoRootManagementGroup = "${{ env.ManagementGroupPrefix }}"
+          $cleanItems = "${{ github.event.inputs.cleanupType }}"
+
+          # Map user-friendly name to script parameter
+          if ($cleanItems -eq "All-Resources") {
+            $cleanItems = "Amba-Alz"
+          }
+
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "Starting AMBA Cleanup" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "Management Group: $pseudoRootManagementGroup" -ForegroundColor Yellow
+          Write-Host "Cleanup Type: $cleanItems" -ForegroundColor Yellow
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
+
+          ./patterns/alz/scripts/Start-AMBA-ALZ-Maintenance.ps1 `
+            -pseudoRootManagementGroup $pseudoRootManagementGroup `
+            -cleanItems $cleanItems `
+            -Confirm:$false
+
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Green
+          Write-Host "AMBA Cleanup Completed" -ForegroundColor Green
+          Write-Host "========================================" -ForegroundColor Green

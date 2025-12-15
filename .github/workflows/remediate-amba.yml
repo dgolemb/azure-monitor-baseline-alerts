@@ -1,0 +1,128 @@
+name: Remediate AMBA Policies
+
+on:
+  workflow_dispatch:
+    inputs:
+      policyName:
+        description: 'Policy to remediate'
+        required: true
+        type: choice
+        options:
+          - 'All-Policies'
+          - 'Alerting-ServiceHealth'
+          - 'Alerting-ResourceAndServiceHealth'
+          - 'Notification-Assets'
+          - 'Alerting-HybridVM'
+          - 'Alerting-VM'
+          - 'Alerting-Connectivity'
+          - 'Alerting-Connectivity-2'
+          - 'Alerting-Identity'
+          - 'Alerting-Management'
+          - 'Alerting-KeyManagement'
+          - 'Alerting-LoadBalancing'
+          - 'Alerting-NetworkChanges'
+          - 'Alerting-RecoveryServices'
+          - 'Alerting-Storage'
+          - 'Alerting-Web'
+        default: 'All-Policies'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ManagementGroupPrefix: "ALZ"
+
+jobs:
+  remediate_policies:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Az CLI login"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      - name: Run AMBA Remediation
+        shell: pwsh
+        run: |
+          $managementGroup = "${{ env.ManagementGroupPrefix }}"
+          $policyName = "${{ github.event.inputs.policyName }}"
+
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "Starting AMBA Policy Remediation" -ForegroundColor Cyan
+          Write-Host "Management Group: $managementGroup" -ForegroundColor Cyan
+          Write-Host "Policy: $policyName" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
+
+          if ($policyName -eq "All-Policies") {
+            # Remediate all policies
+            Write-Host "Remediating ALL policies..." -ForegroundColor Yellow
+            Write-Host ""
+
+            # Service Health
+            Write-Host "Remediating: Alerting-ResourceAndServiceHealth" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-ResourceAndServiceHealth
+
+            # Notification Assets
+            Write-Host "`nRemediating: Notification-Assets" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Notification-Assets
+
+            # Platform - HybridVM and VM
+            Write-Host "`nRemediating: Alerting-HybridVM" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-HybridVM
+
+            Write-Host "`nRemediating: Alerting-VM" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-VM
+
+            # Connectivity
+            Write-Host "`nRemediating: Alerting-Connectivity" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Connectivity
+
+            Write-Host "`nRemediating: Alerting-Connectivity-2" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Connectivity-2
+
+            # Identity
+            Write-Host "`nRemediating: Alerting-Identity" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Identity
+
+            # Management
+            Write-Host "`nRemediating: Alerting-Management" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Management
+
+            # Landing Zones
+            Write-Host "`nRemediating: Alerting-KeyManagement" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-KeyManagement
+
+            Write-Host "`nRemediating: Alerting-LoadBalancing" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-LoadBalancing
+
+            Write-Host "`nRemediating: Alerting-NetworkChanges" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-NetworkChanges
+
+            Write-Host "`nRemediating: Alerting-RecoveryServices" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-RecoveryServices
+
+            Write-Host "`nRemediating: Alerting-Storage" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Storage
+
+            Write-Host "`nRemediating: Alerting-Web" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName Alerting-Web
+          } else {
+            # Remediate single policy
+            Write-Host "Remediating policy: $policyName" -ForegroundColor Yellow
+            ./patterns/alz/scripts/Start-AMBA-ALZ-Remediation.ps1 -managementGroupName $managementGroup -policyName $policyName
+          }
+
+          Write-Host "`n========================================" -ForegroundColor Green
+          Write-Host "AMBA Policy Remediation Completed" -ForegroundColor Green
+          Write-Host "========================================" -ForegroundColor Green
