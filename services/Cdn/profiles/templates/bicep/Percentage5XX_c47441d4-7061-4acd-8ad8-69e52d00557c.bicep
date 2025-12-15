@@ -40,7 +40,7 @@ param alertSeverity int = 2
 param operator string = 'GreaterThan'
 
 @description('The threshold value at which the alert is activated.')
-param threshold int = 10
+param threshold int = 0
 
 @description('How the data that is collected should be combined over time.')
 @allowed([
@@ -50,7 +50,7 @@ param threshold int = 10
   'Total'
   'Count'
 ])
-param timeAggregation string = 'Average'
+param timeAggregation string = 'Count'
 
 @description('Period of time used to monitor alert activity based on the threshold. Must be between one minute and one day. ISO 8601 duration format.')
 @allowed([
