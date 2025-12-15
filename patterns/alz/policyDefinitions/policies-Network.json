@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1327006676508692749"
+      "templateHash": "3605910112340679915"
     }
   },
   "parameters": {
@@ -8381,21 +8381,21 @@
               "description": "Alert state for the alert"
             }
           },
-          "CDNPPercentage5XXFailingPeriods": {
+          "CDNPPercentage5XXThreshold": {
             "type": "String",
             "metadata": {
-              "displayName": "CDN Percentage 5XX Failing Periods",
-              "description": "Number of failing periods before alert is fired"
+              "displayName": "CDN Percentage 5XX Threshold",
+              "description": "The threshold value at which the alert is activated."
             },
-            "defaultValue": "2"
+            "defaultValue": "0"
           },
-          "CDNPPercentage5XXEvaluationPeriods": {
+          "CDNPPercentage5XXOperator": {
             "type": "String",
             "metadata": {
-              "displayName": "CDN Percentage 5XX Evaluation Periods",
-              "description": "The number of aggregated lookback points."
+              "displayName": "CDN Percentage 5XX Operator",
+              "description": "Operator comparing the current value with the threshold value."
             },
-            "defaultValue": "2"
+            "defaultValue": "GreaterThan"
           },
           "TMEndpointHealthAlertSeverity": {
             "type": "String",
@@ -9228,11 +9228,11 @@
               "enabled": {
                 "value": "[[[parameters('CDNPPercentage5XXAlertState')]"
               },
-              "failingPeriods": {
-                "value": "[[[parameters('CDNPPercentage5XXFailingPeriods')]"
+              "threshold": {
+                "value": "[[[parameters('CDNPPercentage5XXThreshold')]"
               },
-              "evaluationPeriods": {
-                "value": "[[[parameters('CDNPPercentage5XXEvaluationPeriods')]"
+              "operator": {
+                "value": "[[[parameters('CDNPPercentage5XXOperator')]"
               },
               "MonitorDisableTagName": {
                 "value": "[[[parameters('ALZMonitorDisableTagName')]"
