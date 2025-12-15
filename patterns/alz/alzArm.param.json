@@ -2521,7 +2521,7 @@
           "value": "2"
         },
         "CDNPPercentage5XXAlertSeverity": {
-          "value": "2"
+          "value": "1"
         },
         "CDNPPercentage5XXWindowSize": {
           "value": "PT5M"
