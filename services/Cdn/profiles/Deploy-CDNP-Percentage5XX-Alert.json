@@ -201,7 +201,7 @@
                 "equals": "[[parameters('autoMitigate')]"
               },
               {
-                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria.allOf[*].timeAggregation",
+                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].timeAggregation",
                 "equals": "Count"
               },
               {
