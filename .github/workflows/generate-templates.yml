@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
           submodules: recursive
           fetch-depth: 0
 
