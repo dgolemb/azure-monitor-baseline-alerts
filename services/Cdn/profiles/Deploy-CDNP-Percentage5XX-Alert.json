@@ -101,21 +101,28 @@
         ],
         "defaultValue": "deployIfNotExists"
       },
-      "failingPeriods": {
+      "threshold": {
         "type": "String",
         "metadata": {
-          "displayName": "Failing Periods",
-          "description": "Number of failing periods before alert is fired"
+          "displayName": "Threshold",
+          "description": "The threshold value at which the alert is activated."
         },
-        "defaultValue": "2"
+        "defaultValue": "0"
       },
-      "evaluationPeriods": {
+      "operator": {
         "type": "String",
         "metadata": {
-          "displayName": "Evaluation Periods",
-          "description": "The number of aggregated lookback points."
+          "displayName": "Operator",
+          "description": "Operator comparing the current value with the threshold value."
         },
-        "defaultValue": "2"
+        "allowedValues": [
+          "Equals",
+          "GreaterThan",
+          "GreaterThanOrEqual",
+          "LessThan",
+          "LessThanOrEqual"
+        ],
+        "defaultValue": "GreaterThan"
       },
       "MonitorDisableTagName": {
         "type": "String",
@@ -195,23 +202,15 @@
               },
               {
                 "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].timeAggregation",
-                "equals": "Average"
+                "equals": "Count"
               },
               {
-                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].DynamicThresholdCriterion.operator",
-                "equals": "GreaterThan"
+                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.allOf[*].StaticThresholdCriterion.operator",
+                "equals": "[[parameters('operator')]"
               },
               {
-                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].DynamicThresholdCriterion.alertSensitivity",
-                "equals": "Medium"
-              },
-              {
-                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].DynamicThresholdCriterion.failingPeriods.minFailingPeriodsToAlert",
-                "equals": "[[parameters('failingPeriods')]"
-              },
-              {
-                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft-Azure-Monitor-MultipleResourceMultipleMetricCriteria.allOf[*].DynamicThresholdCriterion.failingPeriods.numberOfEvaluationPeriods",
-                "equals": "[[parameters('evaluationPeriods')]"
+                "field": "Microsoft.Insights/metricAlerts/criteria.Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.allOf[*].StaticThresholdCriterion.threshold",
+                "equals": "[[if(contains(field('tags'), '_amba-OriginHealthPercentage-threshold-Override_'), field('tags._amba-OriginHealthPercentage-threshold-Override_'), parameters('threshold'))]"
               }
             ]
           },
@@ -251,10 +250,10 @@
                   "enabled": {
                     "type": "String"
                   },
-                  "failingPeriods": {
+                  "threshold": {
                     "type": "String"
                   },
-                  "evaluationPeriods": {
+                  "operator": {
                     "type": "String"
                   }
                 },
@@ -280,17 +279,13 @@
                       "criteria": {
                         "allOf": [
                           {
-                            "alertSensitivity": "Medium",
-                            "failingPeriods": {
-                              "numberOfEvaluationPeriods": "[[parameters('evaluationPeriods')]",
-                              "minFailingPeriodsToAlert": "[[parameters('failingPeriods')]"
-                            },
                             "name": "ServiceApiResult",
                             "metricNamespace": "Microsoft.Cdn/profiles",
                             "metricName": "Percentage5XX",
-                            "operator": "GreaterThan",
-                            "timeAggregation": "Average",
-                            "criterionType": "DynamicThresholdCriterion"
+                            "operator": "[[parameters('operator')]",
+                            "threshold": "[[parameters('threshold')]",
+                            "timeAggregation": "Count",
+                            "criterionType": "StaticThresholdCriterion"
                           }
                         ],
                         "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
@@ -312,11 +307,11 @@
                         "enabled": {
                           "value": "[[parameters('enabled')]"
                         },
-                        "failingPeriods": {
-                          "value": "[[parameters('failingPeriods')]"
+                        "threshold": {
+                          "value": "[[parameters('threshold')]"
                         },
-                        "evaluationPeriods": {
-                          "value": "[[parameters('evaluationPeriods')]"
+                        "operator": {
+                          "value": "[[parameters('operator')]"
                         }
                       }
                     }
@@ -345,11 +340,11 @@
                 "enabled": {
                   "value": "[[parameters('enabled')]"
                 },
-                "failingPeriods": {
-                  "value": "[[parameters('failingPeriods')]"
+                "threshold": {
+                  "value": "[[parameters('threshold')]"
                 },
-                "evaluationPeriods": {
-                  "value": "[[parameters('evaluationPeriods')]"
+                "operator": {
+                  "value": "[[parameters('operator')]"
                 }
               }
             }
