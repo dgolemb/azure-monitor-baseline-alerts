@@ -23,6 +23,8 @@ jobs:
 
       - name: "Az CLI login"
         uses: azure/login@v1
+        env:
+          AZURE_IDENTITY_DISABLE_CP1: 'true'
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
