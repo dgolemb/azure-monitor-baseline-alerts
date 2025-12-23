@@ -43,6 +43,8 @@ jobs:
           fetch-depth: 0
 
       - name: "Az CLI login"
+        env:
+          AZURE_IDENTITY_DISABLE_CP1: 'true'
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
